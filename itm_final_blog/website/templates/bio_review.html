@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Biology Review{% endblock %}
+
+{% block content %}
+<h1 align="center">Biology</h1>
+<div id="bio_reviews">
+  {% for bio_review in bio_reviews %}
+  <div class="card border-dark">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <a>Thread Creator: {{ bio_review.user.first_name }}</a>
+    </div>
+    <div class="card-body">
+      <div class="card-text">{{ bio_review.bio_review }}</div>
+    </div>
+    <div class="card-footer text-muted">
+      {{ bio_review.bio_date }}
+    </div>
+  </div>
+  <br />
+  <br />
+  {% endfor %}
+</div>
+
+<form method="POST">
+    <textarea name="bio_review" id="text" class="form-control"></textarea>
+    <br />
+    <div align="center">
+      <button type="submit" class="btn btn-lg btn-primary">Create a thread</button>
+    </div>
+  </form>
+{% endblock %}

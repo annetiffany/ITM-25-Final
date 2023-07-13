@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block title %}Feed{% endblock %}
+
+{% block content %}
+<h1 align="center">Feed</h1>
+
+<form method="POST">
+    <textarea name="post" id="text" class="form-control"></textarea>
+    <br />
+    <div align="center">
+      <button type="submit" class="btn btn-lg btn-primary">Create a thread</button>
+    </div>
+  </form>
+<br />
+
+<div id="post">
+  {% for post in posts %}
+  <div class="card border-dark">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <a>Thread Creator: {{ post.user.first_name }}</a>
+    </div>
+
+    <div class="card-body">
+      <div class="card-text">{{ post.post }}</div>
+      <br />
+      <form class="input-group mb-3" method='POST' action="/create-comment/{{post.id}}">
+        <input type="text" id="text" name="text" class="form-control" placeholder="Say something!" />
+        <button type="submit" class="btn btn-primary">Comment</button>
+      </form>
+    </div>
+
+    <div class="card-footer text-muted">
+      {{ post.date }}
+    </div>
+  </div>
+  <br />
+  <br />
+  {% endfor %}
+</div>
+{% endblock %}
