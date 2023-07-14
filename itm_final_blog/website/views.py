@@ -26,3 +26,52 @@ def feed():
             return redirect(url_for('views.feed'))
     return render_template('feed.html', user=current_user, posts=posts)
 
+@views.route("/delete-post/<id>")
+@login_required
+def delete_post(id):
+    post = Post.query.filter_by(id=id).first()
+
+    if not post:
+        flash('Post does not exist.', category='error')
+    elif current_user.id != post.author:
+        flash('You do not have permission to delete this Post.', category='error')
+    else:
+        db.session.delete(post)
+        db.session.commit()
+        flash('Post deleted.', category='success')
+        
+    return redirect(url_for('views.feed'))
+
+@views.route("/comment/<post_id>", methods=['POST'])
+@login_required
+def comment(post_id):
+    comment = request.form.get('comment')
+
+    if not comment:
+        flash('Comment cannot be empty.', category='error')
+    else:
+        post = Post.query.filter_by(id=post_id)
+        if post:
+            comment = Comment(comment=comment, author=current_user.id, post_id=post_id)
+            db.session.add(comment)
+            db.session.commit()
+        else:
+            flash('Post does not exist.', category='error')
+    
+    return redirect(url_for('views.feed'))
+
+@views.route("/delete-comment/<comment_id>")
+@login_required
+def delete_comment(comment_id):
+    comment = Comment.query.filter_by(id=comment_id).first()
+
+    if not comment:
+        flash('Comment does not exist.', category='error')
+    elif current_user.id != comment.author and current_user.id != comment.post.author:
+        flash('You do not have permission to delete this comment.', category='error')
+    else:
+        db.session.delete(comment)
+        db.session.commit()
+        flash('Comment deleted.', category='success')
+        
+    return redirect(url_for('views.feed'))
